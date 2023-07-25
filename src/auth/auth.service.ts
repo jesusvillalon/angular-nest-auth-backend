@@ -55,8 +55,16 @@ export class AuthService {
 
 // Registro de usuario
   async register(registerUserDto: RegisterUserDto): Promise<LoginResponse> {
+
+    const email = RegisterUserDto;
     // Lógica registro de usuario
     const user = await this.create(registerUserDto);
+    const userEmail = await this.userModel.findOne({email});
+
+    // Verificamos si ya existe el email en la base de datos.
+    if(userEmail) {
+      throw new UnauthorizedException('Email already exists');
+    }
 
     return {
       user: user,
@@ -81,13 +89,15 @@ export class AuthService {
       throw new UnauthorizedException('Not valid credentials - password');
     }
 
-    const { password: _, ...rest } = user.toJSON();
+    const { password:_, ...rest } = user.toJSON();
 
     return {
       user: rest,
       token: this.getJwtToken({ id: user.id }),
     };
   }
+
+
 
 
   findAll(): Promise<User[]> {
