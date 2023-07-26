@@ -7,7 +7,10 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     ConfigModule.forRoot(),
 
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.MONGO_URI, {
+      // agregamos el nombre de la base de datos con la que queremos trabajar
+      dbName: process.env.MONGO_DB_NAME
+    }),
     AuthModule],
   controllers: [],
   providers: [],
